@@ -1,30 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include "stack/stack.h"
+#include <limits.h>
+
+#define __ALIGN_SIZE (__WORDSIZE / 8)
+#define isBadPtr(ptr) ((size_t)(ptr) % __ALIGN_SIZE != 0)
 
 int main(int argc, char *argv[]) {
-	stack_t stack = stack_new();
-	
-	int *n1, *n2, *n3;
-	n1 = (int *)malloc(sizeof(int));
-	n2 = (int *)malloc(sizeof(int));
-	n3 = (int *)malloc(sizeof(int));
-	
-	printf("Enter a number: ");
-	scanf("%d", n1);
-	stack_push(stack, (void *)n1);
-
-	printf("Enter a number: ");
-	scanf("%d", n2);
-	stack_push(stack, (void *)n2);
-
-	printf("Enter a number: ");
-	scanf("%d", n3);
-	stack_push(stack, (void *)n3);
-
-	int *ptr = stack_pop(stack);
-	printf("%d\n", *ptr); // should print n3
+	int *n = (int *)malloc(sizeof(int));
+	char *c = (char *)n;
+	c++;
+	printf("%d\n", isBadPtr(n));
+	printf("%d\n", isBadPtr(c));	
 	
 	return EXIT_SUCCESS;
 }

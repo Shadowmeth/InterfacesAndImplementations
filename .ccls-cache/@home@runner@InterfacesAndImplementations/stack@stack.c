@@ -9,6 +9,7 @@ typedef struct stack {
 		void *item;
 		struct elem *link;
 	} *head;
+	char __interface_stack_;
 } *stack_t;
 
 stack_t stack_new(void) {
@@ -18,17 +19,20 @@ stack_t stack_new(void) {
 	}
 	stack->count = 0;
 	stack->head = NULL;
+	stack->__interface_stack_ = 1;
 	return stack;
 }
 
 int stack_empty(stack_t stack) {
 	assert(stack && "null passed to stack_empty");	
+	assert(stack->__interface_stack_ && "foreign stack used");
 	return stack->count == 0;
 }
 
 void stack_push(stack_t stack, void *item) {
 	struct elem *t;
 	assert (stack && "null passed to stack_push");
+	assert (stack->__interface_stack_ && "foreign stack used");
 	t = (struct elem *)malloc(sizeof(struct elem));
 	t->item = item;
 	t->link = stack->head;
@@ -41,6 +45,7 @@ void *stack_pop(stack_t stack) {
 	struct elem *t;
 	assert(stack && "null passed to stack_pop");
 	assert(stack->count > 0 && "cannot pop from empty stack");
+	assert(stack->__interface_stack_ && "foreign stack used");
 	t = stack->head;
 	stack->head = t->link;
 	stack->count--;
@@ -54,6 +59,7 @@ void stack_free(stack_t *stack) {
 	// notice this is a double pointer
 	struct elem *t, *u;
 	assert(stack && *stack && "null passed to stack_free");
+	assert((*stack)->__interface_stack_ && "foreign stack used");
 	for (t = (*stack)->head; t; t = u) {
 		u = t->link;
 		free(t);
